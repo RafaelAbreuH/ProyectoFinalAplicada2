@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-ProyectoFinalAplicada2-E1D65378-A31C-4954-BDBF-222ED0E71D2E</UserSecretsId>
+    <StartWorkingDirectory>$(MSBuildProjectDirectory)</StartWorkingDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="DataBase\" />
     <Folder Include="Pages\Consultas\" />
-    <Folder Include="Pages\Registros\" />
   </ItemGroup>
 
 </Project>

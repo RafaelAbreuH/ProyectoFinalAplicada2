@@ -1,0 +1,196 @@
+﻿@page "/Usuarios"
+@page "/Usuarios/{Id:int}"
+<section class="form-register">
+    <h3>Usuarios</h3>
+    <EditForm Model="@usuarios" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <label class="text-muted form-text">@Mensaje</label>
+        <div class="form-group">
+            <label for="usuario_number">UsuarioId</label>
+            <InputNumber id="usuario_number" class="form-control" @bind-Value="usuarios.UsuarioId"></InputNumber>
+            <ValidationMessage For="(() => usuarios.UsuarioId)" />
+            <button type="button" class="btn btn-primary" @onclick="Buscar">Buscar</button>
+        </div>
+
+        <div class="form-group">
+            <label for="NombrePersona_text">Nombre</label>
+            <InputText id="NombrePersona_text" class="form-control" @bind-Value="usuarios.Nombre"></InputText>
+            <ValidationMessage For="(() => usuarios.Nombre)" />
+        </div>
+
+        <div class="form-group">
+            <label for="EmailUsuario_text">Email</label>
+            <InputText id="EmailUsuario_text" class="form-control" @bind-Value="usuarios.Usuario"></InputText>
+            <ValidationMessage For="(() => usuarios.Usuario)" />
+        </div>
+
+        <div class="form-group">
+            <label for="Clave_text">Clave</label>
+            <InputText id="Clave_text" type="password" class="form-control" @bind-Value="usuarios.Contraseña"></InputText>
+            <ValidationMessage For="(() => usuarios.Contraseña)" />
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar Clave</label>
+            <InputText type="password" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="NivelUsuario_text" class="form-control">Nivel de Usuario</label>
+            <InputSelect @bind-Value="@usuarios.TipodeUsuario">
+                <option value="Administrador">Administrador</option>
+                <option value="Contador">Contador</option>
+                <option value="Cajero">Cajero</option>
+            </InputSelect>
+            <ValidationMessage For="(() => usuarios.TipodeUsuario)" />
+        </div>
+
+        <div class="form-group">
+            <label for="FechaIngreso_date">Fecha de Ingreso</label>
+            <InputDate id="FechaIngreso_date" class="form-control" @bind-Value="usuarios.FechaIngreso"></InputDate>
+            <ValidationMessage For="(() => usuarios.FechaIngreso)" />
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-danger" @onclick="Limpiar">Nuevo</button>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-secondary" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </EditForm>
+</section>
+<br />
+<br />
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string Mensaje { get; set; }
+
+    Usuarios usuarios = new Usuarios();
+
+    protected override void OnInitialized()
+    {
+        UsuarioController controller = new UsuarioController();
+        Limpiar();
+        Mensaje = string.Empty;
+        if (Id != 0)
+        {
+            usuarios = controller.Buscar(Id);
+        }
+    }
+
+    public string Encrypt(string cadenaEncriptada)
+    {
+        string resultado = string.Empty;
+        byte[] encryted = System.Text.Encoding.Unicode.GetBytes(cadenaEncriptada);
+        resultado = Convert.ToBase64String(encryted);
+
+        return resultado;
+    }
+
+    public string DeCrypt(string cadenaDesencriptada)
+    {
+        string resultado = string.Empty;
+        byte[] decryted = Convert.FromBase64String(cadenaDesencriptada);
+        resultado = System.Text.Encoding.Unicode.GetString(decryted);
+
+        return resultado;
+    }
+
+    public bool ExisteEnLaBaseDeDatos(int id)
+    {
+        Contexto db = new Contexto();
+        var buscado = db.Usuarios.Find(id);
+        bool paso = true;
+
+        if (buscado == null)
+        {
+            paso = false;
+        }
+
+        return paso;
+    }
+
+    private void Limpiar()
+    {
+        usuarios = new Usuarios();
+    }
+
+    private void Guardar()
+    {
+        UsuarioController controller = new UsuarioController();
+
+        if (usuarios.UsuarioId > 0)
+        {
+            if (ExisteEnLaBaseDeDatos(usuarios.UsuarioId))
+            {
+                if (controller.Guardar(usuarios))
+                {
+                    Mensaje = "Se modifico correctamente";
+                    Limpiar();
+                }
+                else
+                {
+                    Mensaje = "No se pudo modificar";
+                }
+
+            }
+            else
+            {
+                Mensaje = "No se puede modificar un Usuario que no exista";
+            }
+        }
+        else
+        {
+            if (controller.Guardar(usuarios))
+            {
+                Mensaje = "Se guardo correctamente";
+                Limpiar();
+            }
+            else
+            {
+                Mensaje = "No se pudo Guardar";
+            }
+        }
+    }
+
+    private void Eliminar()
+    {
+        UsuarioController controller = new UsuarioController();
+        int id = usuarios.UsuarioId;
+        if (id > 0)
+        {
+            if (ExisteEnLaBaseDeDatos(id))
+            {
+                controller.Eliminar(id);
+                Limpiar();
+                Mensaje = "Se elimino Correctamente";
+            }
+            else
+            {
+                Mensaje = "No se puede eliminar un Usuario que no Exista";
+            }
+        }
+        else
+        {
+            Mensaje = "No se puede eliminar asi";
+        }
+    }
+
+    private void Buscar()
+    {
+        UsuarioController controller = new UsuarioController();
+        var buscado = controller.Buscar(usuarios.UsuarioId);
+
+        if (buscado != null)
+        {
+            usuarios = buscado;
+            Mensaje = "Se encontro el Usuario";
+        }
+        else
+        {
+            Mensaje = "No existe este Usuario";
+        }
+    }
+}
