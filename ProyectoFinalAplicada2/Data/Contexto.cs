@@ -19,7 +19,7 @@ namespace ProyectoFinalAplicada2.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlite(@"Data source = Database\ProyectoFinal1Data.db");
+            optionsBuilder.UseSqlite(@"Data source = Database\ProyectoFinalData.db");
         }
     }
 }

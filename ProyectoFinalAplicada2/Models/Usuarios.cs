@@ -16,6 +16,9 @@ namespace ProyectoFinalAplicada2.Models
         public string Usuario { get; set; }
         [Required(ErrorMessage = "La Contraseña no puede estar vacío")]
         public string Contraseña { get; set; }
+        [Required(ErrorMessage = "La Contraseña No Coincide ")]
+        public string RepeatContraseña { get; set; }
+
 
         [DataType(DataType.DateTime)]
         [Required(ErrorMessage = "El campo fecha no puede estar vacío")]

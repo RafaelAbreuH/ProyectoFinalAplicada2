@@ -10,13 +10,13 @@ namespace ProyectoFinalAplicada2.Models
     {
         [Key]
         public int ClienteId { get; set; }
-        [Required]
+        [Required(ErrorMessage = " Nombre no puede estar vacío")]
         public string Nombre { get; set; }
-        [Required]
+        [Required(ErrorMessage = " Cedula no puede estar vacia")]
         public string Cedula { get; set; }
-        [Required]
+        [Required(ErrorMessage = " El Telefono no puede estar vacio")]
         public string Telefono { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Direccion no puede estar vacia")]
         public string Direccion { get; set; }
         public Clientes()
         {
